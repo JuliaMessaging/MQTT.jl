@@ -16,10 +16,10 @@ Pages = [
   "extensions.md",
   "api.md"
 ]
-Depth = 2
+Depth = 3
 ```
 
-## Index
+## API Index
 
 ```@index
 ```

@@ -1,3 +1,6 @@
+```@index
+```
+
 ```@docs
 AbstractConnection
 QOS
