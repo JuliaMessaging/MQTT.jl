@@ -1,15 +1,14 @@
 module MQTT
 
-export MQTTClient, MQTTConnection
+export AbstractConnection, MQTTConnection
 
 export QOS
 
+export connect, connect!
 export subscribe, subscribe!
 export publish, publish!
 export unsubscribe, unsubscribe!
 export disconnect, disconnect!
-
-export resolve
 
 ## -- Types --
 
@@ -22,7 +21,7 @@ MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe, 
 
 An MQTT client establishes a connection with the MQTT broker. Once connected, the client can either publish messages, subscribe to specific messages, or do both. When the MQTT broker receives a message, it forwards it to subscribers who are interested.
 """
-abstract type MQTTConnection end
+abstract type AbstractConnection end
 
 ## -- Enums --
 
@@ -38,68 +37,31 @@ An enum representing the different Quality of Service (QoS) levels in MQTT.
 """
 @enum QOS::UInt8 AT_MOST_ONCE=0x00 AT_LEAST_ONCE=0x01 EXACTLY_ONCE=0x02
 
-## -- Structs
-
-"""
-    struct MQTTException <: Exception
-        msg::AbstractString
-    end
-
-    A custom exception type for MQTT errors.
-
-    # Examples
-    ```julia-repl
-    julia> throw(MQTTException(\"Connection refused: Not authorized\"))
-    MQTTException(\"Connection refused: Not authorized\")
-    ```
-"""
-struct MQTTException <: Exception
-    msg::AbstractString
-end
-
 ## -- Interfaces --
 
-connect(client <: MQTTConnection) = _connect(client)
+connect(c::AbstractConnection) = _connect(c)
 
-connect!(client <: MQTTConnection) = resolve(_connect(client))
-
-
-subscribe(callback, connection <: MQTTConnection, topic, qos::QOS) = _subscribe(callback, connection, topic, qos)
-
-subscribe!(callback, connection <: MQTTConnection, topic, qos::QOS) = resolve(_subscribe(callback, connection, topic, qos))
+connect!(c::AbstractConnection) = _resolve(_connect(c))
 
 
-publish(connection <: MQTTConnection, topic, payload, qos::QOS; retain=false) = _publish(connection, topic, payload, qos, retain)
+subscribe(callback, connection::AbstractConnection, topic, qos::QOS) = _subscribe(callback, connection, topic, qos)
 
-publish!(connection <: MQTTConnection, topic, payload, qos::QOS; retain=false) = resolve(_publish(connection, topic, payload, qos, retain))
-
-
-unsubscribe(connection <: MQTTConnection, topic) = _unsubscribe(connection, topic)
-
-unsubscribe!(connection <: MQTTConnection, topic) = resolve(_unsubscribe(connection, topic))
+subscribe!(callback, connection::AbstractConnection, topic, qos::QOS) = _resolve(_subscribe(callback, connection, topic, qos))
 
 
-disconnect(connection <: MQTTConnection) = _disconnect(connection)
+publish(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) = _publish(connection, topic, payload, qos, retain)
 
-disconnect!(connection <: MQTTConnection) = resolve(_disconnect(connection))
+publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) = _resolve(_publish(connection, topic, payload, qos, retain))
 
 
-## -- Utils --
+unsubscribe(connection::AbstractConnection, topic) = _unsubscribe(connection, topic)
 
-"""
-    resolve(future)
+unsubscribe!(connection::AbstractConnection, topic) = _resolve(_unsubscribe(connection, topic))
 
-Fetch the result of a `Future` object and return it. If the result is an exception, throw the exception, otherwise return the result.
 
-# Arguments
-- `future`: The `Future` object to fetch the result from.
+disconnect(connection::AbstractConnection) = _disconnect(connection)
 
-# Returns
-- The result of the `Future`, or throws an exception if the result is an exception.
-"""
-function resolve(future)
-    r = fetch(future)
-    return (typeof(r) <: Exception) ? throw(r) : r
-end
+disconnect!(connection::AbstractConnection) = _resolve(_disconnect(connection))
+
 
 end

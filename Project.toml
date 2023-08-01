@@ -3,6 +3,17 @@ uuid = "ebefff21-3b8f-497c-a71a-d17835ab79ba"
 authors = ["Nicholas Shindler <nick@shindler.tech> and contributors"]
 version = "0.0.1-DEV"
 
+[deps]
+MQTTClient = "985f35cc-2c3d-4943-b8c1-f0931d5f0959"
+
+[weakdeps]
+AWSCRT = "df31ea59-17a4-4ebd-9d69-4f45266dc2c7"
+MQTTClient = "985f35cc-2c3d-4943-b8c1-f0931d5f0959"
+
+[extensions]
+AWSCRTExt = "AWSCRT"
+MQTTClientExt = "MQTTClient"
+
 [compat]
 julia = "1.9"
 

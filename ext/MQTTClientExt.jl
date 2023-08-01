@@ -2,28 +2,37 @@ module MQTTClientExt
 
 using MQTTClient, MQTT
 
-function MQTT._connect(c::MQTTClient.MQTTConnection)
-    MQTTClient.connect_asyc(c)
+struct MQTT.MQTTConnection{T <: MQTTClient.AbstractMQTTProtocol} <: MQTT.AbstractConnection
+    client::MQTTClient.Client
+    connection::T
 end
 
-function MQTT._subscribe(callback, c::MQTTClient.MQTTClient, topic, qos)
-    MQTTClient.subscribe_async(c, topic, on_msg qos=qos)
+function MQTT._resolve(async_object)
+    MQTTClient.resolve(async_object)
 end
 
-function MQTT._publish(c::MQTTClient.MQTTClient, topic, payload, qos, retain)
-    publish_async(c,
+function MQTT._connect(c::MQTT.MQTTConnection)
+    MQTTClient.connect_asyc(c.client, c.connection)
+end
+
+function MQTT._subscribe(callback, c::MQTT.MQTTConnection, topic, qos::MQTT.QOS)
+    MQTTClient.subscribe_async(c.client, topic, on_msg qos=MQTTClient.QOS(UInt8(qos)))
+end
+
+function MQTT._publish(c::MQTT.MQTTConnection, topic, payload, qos::MQTT.QOS, retain)
+    publish_async(c.client,
             topic,
             payload,
-            qos=qos,
+            qos=MQTTClient.QOS(UInt8(qos)),
             retain = retain)
 end
 
-function MQTT._unsubscribe(c::MQTTClient.MQTTClient, topic)
-    unsubscribe_async(client, topic)
+function MQTT._unsubscribe(c::MQTT.MQTTConnection, topic)
+    unsubscribe_async(c.client, topic)
 end
 
-function MQTT._disconnect(c::MQTTClient.MQTTClient)
-    disconnect(c)
+function MQTT._disconnect(c::MQTT.MQTTConnection)
+    disconnect(c.client)
 end
 
 end # module
