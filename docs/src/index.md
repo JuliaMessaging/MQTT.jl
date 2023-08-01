@@ -4,11 +4,22 @@ CurrentModule = MQTT
 
 # MQTT
 
-Documentation for [MQTT](https://github.com/NickMcSweeney/MQTT.jl).
+Documentation for [MQTT](https://github.com/JuliaMQTT/MQTT.jl).
 
-```@index
+This Package is a interface package for generic use functions with the goal of making MQTT package backends interchangeable.
+
+## Table of Contents
+
+```@contents
+Pages = [
+  "getting-started.md",
+  "extensions.md",
+  "api.md"
+]
+Depth = 2
 ```
 
-```@autodocs
-Modules = [MQTT]
+## Index
+
+```@index
 ```
