@@ -7,3 +7,13 @@
 [![Coverage](https://coveralls.io/repos/github/NickMcSweeney/MQTT.jl/badge.svg?branch=main)](https://coveralls.io/github/NickMcSweeney/MQTT.jl?branch=main)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![PkgEval](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/M/MQTT.svg)](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/report.html)
+
+This is an interface package for MQTT Messaging. See the [documentation](https://NickMcSweeney.github.io/MQTT.jl/stable/) for more information.
+
+## Contributing
+
+If you would like to contribute to the project, please submit a PR. All contributions are welcomed and appreciated.
+
+## Acknowledgements
+
+We thank [MapXact](https://mapxact.com/) for sponsoring and supporting the work on this package.
