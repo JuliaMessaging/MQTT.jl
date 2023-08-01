@@ -18,7 +18,7 @@ makedocs(;
         "Home" => "index.md",
         "Getting Started" => "getting-started.md",
         "Extending MQTT.jl" => "extensions.md",
-        "MQTT API" => "api.jl",
+        "MQTT API" => "api.md",
     ],
 )
 
