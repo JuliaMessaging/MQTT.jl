@@ -2,9 +2,9 @@ module MQTTClientExt
 
 using MQTTClient, MQTT
 
-struct MQTT.MQTTConnection{T <: MQTTClient.AbstractMQTTProtocol} <: MQTT.AbstractConnection
+struct MQTT.MQTTConnection <: MQTT.AbstractConnection
     client::MQTTClient.Client
-    connection::T
+    connection::MQTTClient.MQTTConnection
 end
 
 function MQTT._resolve(async_object)

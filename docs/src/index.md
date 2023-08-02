@@ -4,7 +4,7 @@ CurrentModule = MQTT
 
 # MQTT
 
-Documentation for [MQTT](https://github.com/JuliaMQTT/MQTT.jl).
+Documentation for [MQTT](https://github.com/JuliaMessaging/MQTT.jl).
 
 This Package is a interface package for generic use functions with the goal of making MQTT package backends interchangeable.
 

@@ -3,7 +3,7 @@
 Installation
 ------------
 ```julia
-Pkg.clone("https://github.com/JuliaMQTT/MQTT.jl.git")
+Pkg.clone("https://github.com/JuliaMessaging/MQTT.jl.git")
 ```
 Testing
 -------
