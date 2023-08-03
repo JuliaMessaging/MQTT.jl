@@ -1,7 +1,7 @@
 name = "MQTT"
 uuid = "ebefff21-3b8f-497c-a71a-d17835ab79ba"
 authors = ["Nicholas Shindler <nick@shindler.tech> and contributors"]
-version = "0.0.1-DEV"
+version = "0.0.2-DEV"
 
 [deps]
 
