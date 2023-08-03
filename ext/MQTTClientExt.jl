@@ -16,15 +16,11 @@ function MQTT._connect(c::MQTT.MQTTConnection)
 end
 
 function MQTT._subscribe(callback, c::MQTT.MQTTConnection, topic, qos::MQTT.QOS)
-    MQTTClient.subscribe_async(c.client, topic, on_msg, qos=MQTTClient.QOS(UInt8(qos)))
+    MQTTClient.subscribe_async(c.client, topic, on_msg, qos = MQTTClient.QOS(UInt8(qos)))
 end
 
 function MQTT._publish(c::MQTT.MQTTConnection, topic, payload, qos::MQTT.QOS, retain)
-    publish_async(c.client,
-            topic,
-            payload,
-            qos=MQTTClient.QOS(UInt8(qos)),
-            retain = retain)
+    publish_async(c.client, topic, payload, qos = MQTTClient.QOS(UInt8(qos)), retain = retain)
 end
 
 function MQTT._unsubscribe(c::MQTT.MQTTConnection, topic)

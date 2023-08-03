@@ -31,37 +31,51 @@ abstract type AbstractConnection end
 An enum representing the different Quality of Service (QoS) levels in MQTT.
 
 # Values
-- `AT_MOST_ONCE`: QoS level 0, at most once delivery. The message is delivered at most once, or it may not be delivered at all. This is also known as "fire and forget".
-- `AT_LEAST_ONCE`: QoS level 1, at least once delivery. The message is guaranteed to be delivered at least once, but it may be delivered multiple times.
-- `EXACTLY_ONCE`: QoS level 2, exactly once delivery. The message is guaranteed to be delivered exactly once.
+
+  - `AT_MOST_ONCE`: QoS level 0, at most once delivery. The message is delivered at most once, or it may not be delivered at all. This is also known as "fire and forget".
+  - `AT_LEAST_ONCE`: QoS level 1, at least once delivery. The message is guaranteed to be delivered at least once, but it may be delivered multiple times.
+  - `EXACTLY_ONCE`: QoS level 2, exactly once delivery. The message is guaranteed to be delivered exactly once.
 """
-@enum QOS::UInt8 AT_MOST_ONCE=0x00 AT_LEAST_ONCE=0x01 EXACTLY_ONCE=0x02
+@enum QOS::UInt8 AT_MOST_ONCE = 0x00 AT_LEAST_ONCE = 0x01 EXACTLY_ONCE = 0x02
 
 ## -- Interfaces --
+
+"""
+    on_message(topic::String, payload::String)
+
+A callback invoked when a message is received.
+
+Arguments:
+
+  - `topic (String)`: The topic receiving the message.
+  - `payload (String)`: The payload of the message.
+
+Returns `nothing`.
+"""
+const OnMessage = Function
 
 connect(c::AbstractConnection) = _connect(c)
 
 connect!(c::AbstractConnection) = _resolve(_connect(c))
 
+subscribe(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
+    _subscribe(callback, connection, topic, qos)
 
-subscribe(callback, connection::AbstractConnection, topic, qos::QOS) = _subscribe(callback, connection, topic, qos)
+subscribe!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
+    _resolve(_subscribe(callback, connection, topic, qos))
 
-subscribe!(callback, connection::AbstractConnection, topic, qos::QOS) = _resolve(_subscribe(callback, connection, topic, qos))
+publish(connection::AbstractConnection, topic, payload, qos::QOS; retain = false) =
+    _publish(connection, topic, payload, qos, retain)
 
-
-publish(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) = _publish(connection, topic, payload, qos, retain)
-
-publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) = _resolve(_publish(connection, topic, payload, qos, retain))
-
+publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false) =
+    _resolve(_publish(connection, topic, payload, qos, retain))
 
 unsubscribe(connection::AbstractConnection, topic) = _unsubscribe(connection, topic)
 
 unsubscribe!(connection::AbstractConnection, topic) = _resolve(_unsubscribe(connection, topic))
 
-
 disconnect(connection::AbstractConnection) = _disconnect(connection)
 
 disconnect!(connection::AbstractConnection) = _resolve(_disconnect(connection))
-
 
 end
