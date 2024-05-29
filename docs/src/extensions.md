@@ -2,7 +2,7 @@
 
 ## How it works
 
-MQTT.jl uses the (new) Weak Deps features to allow multiple MQTT packages to be added as weak dependancies. 
+MQTT.jl uses the Weak Deps features to allow multiple MQTT packages to be added as weak dependancies. 
 
 Each MQTT client implimentation needs to have a extension added in the `ext` directory (and registered in the `Project.toml`).
 

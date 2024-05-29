@@ -1,6 +1,7 @@
 module AWSCRTExt
 
-import AWSCRT, MQTT
+using AWSCRT: AWSCRT
+using MQTT: MQTT
 
 struct MQTT.MQTTConnection <: MQTT.AbstractConnection
     connection::AWSCRT.MQTTConnection
@@ -10,11 +11,12 @@ struct MQTT.MQTTConnection <: MQTT.AbstractConnection
     connect_kwargs::Dict{Symbol,Any}
 end
 
-MQTT.MQTTConnection(connection, endpoint, port, id; connect_kwargs = Dict()) =
-    MQTT.MQTTConnection(connection, endpoint, port, id, connect_kwargs)
+function MQTT.MQTTConnection(connection, endpoint, port, id; connect_kwargs=Dict())
+    return MQTT.MQTTConnection(connection, endpoint, port, id, connect_kwargs)
+end
 
 function MQTT._resolve(async_object)
-    fetch(async_object)
+    return fetch(async_object)
 end
 
 function MQTT._connect(c::MQTT.MQTTConnection)
@@ -22,12 +24,12 @@ function MQTT._connect(c::MQTT.MQTTConnection)
 end
 
 function MQTT._subscribe(callback, c::MQTT.MQTTConnection, topic, qos)
-    task, id = AWSCRT.subscribe(c.connection, topic, qos = AWSCRT.aws_mqtt_qos(Int(qos)), _adapt_on_message(callback))
+    task, id = AWSCRT.subscribe(c.connection, topic; qos=AWSCRT.aws_mqtt_qos(Int(qos)), _adapt_on_message(callback))
     return task
 end
 
 function MQTT._publish(c::MQTT.MQTTConnection, topic, payload, qos, retain)
-    task, id = AWSCRT.publish(c.connection, topic, payload, qos = AWSCRT.aws_mqtt_qos(Int(qos)), retain = retain)
+    task, id = AWSCRT.publish(c.connection, topic, payload; qos=AWSCRT.aws_mqtt_qos(Int(qos)), retain=retain)
     return task
 end
 

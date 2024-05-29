@@ -1,3 +1,5 @@
+style = "blue"
+
 margin = 120
 remove_extra_newlines = true
 format_docstrings = true

@@ -1,34 +1,38 @@
 module MQTTClientExt
 
-using MQTTClient, MQTT
+using MQTTClient: MQTTClient
+using MQTT: MQTT
 
-struct MQTT.MQTTConnection <: MQTT.AbstractConnection
+struct MQTTConnection <: MQTT.AbstractConnection
     client::MQTTClient.Client
-    connection::MQTTClient.MQTTConnection
+    connection::MQTTClient.Connection
+
+    MQTTConnection(configuration::MQTTClient.Configuration) = new(configuration.client, configuration.connection)
 end
+MQTT.MQTTConnection(configuration::MQTTClient.Configuration) = MQTTConnection(configuration)
 
 function MQTT._resolve(async_object)
-    MQTTClient.resolve(async_object)
+    return MQTTClient.resolve(async_object)
 end
 
-function MQTT._connect(c::MQTT.MQTTConnection)
-    MQTTClient.connect_asyc(c.client, c.connection)
+function MQTT._connect(c::MQTTConnection)
+    return MQTTClient.connect_async(c.client, c.connection)
 end
 
-function MQTT._subscribe(callback, c::MQTT.MQTTConnection, topic, qos::MQTT.QOS)
-    MQTTClient.subscribe_async(c.client, topic, on_msg, qos = MQTTClient.QOS(UInt8(qos)))
+function MQTT._subscribe(callback::MQTT.OnMessage, c::MQTTConnection, topic::AbstractString, qos::MQTT.QOS)
+    return MQTTClient.subscribe_async(c.client, topic, callback; qos=MQTTClient.QOS(UInt8(qos)))
 end
 
-function MQTT._publish(c::MQTT.MQTTConnection, topic, payload, qos::MQTT.QOS, retain)
-    publish_async(c.client, topic, payload, qos = MQTTClient.QOS(UInt8(qos)), retain = retain)
+function MQTT._publish(c::MQTTConnection, topic::AbstractString, payload, qos::MQTT.QOS, retain)
+    return MQTTClient.publish_async(c.client, topic, payload; qos=MQTTClient.QOS(UInt8(qos)), retain=retain)
 end
 
-function MQTT._unsubscribe(c::MQTT.MQTTConnection, topic)
-    unsubscribe_async(c.client, topic)
+function MQTT._unsubscribe(c::MQTTConnection, topic::AbstractString)
+    return MQTTClient.unsubscribe_async(c.client, topic)
 end
 
-function MQTT._disconnect(c::MQTT.MQTTConnection)
-    disconnect(c.client)
+function MQTT._disconnect(c::MQTTConnection)
+    return MQTTClient.disconnect(c.client)
 end
 
 end # module

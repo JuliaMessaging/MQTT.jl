@@ -2,26 +2,21 @@ module MQTT
 
 export AbstractConnection, MQTTConnection
 
-export QOS
+export QOS, AT_MOST_ONCE, AT_LEAST_ONCE, EXACTLY_ONCE
 
-export connect, connect!
-export subscribe, subscribe!
-export publish, publish!
-export unsubscribe, unsubscribe!
-export disconnect, disconnect!
+export connect!, connect_async!
+export subscribe!, subscribe_async!
+export publish!, publish_async!
+export unsubscribe!, unsubscribe_async!
+export disconnect!, disconnect_async!
 
 ## -- Types --
 
-"""
-    MQTTConnection
-
-An abstract type representing a connection to an MQTT broker.
-
-MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe, machine-to-machine network protocol for message queue/message queuing service. It is designed for connections with remote locations that have devices with resource constraints or limited network bandwidth, such as in the Internet of Things (IoT). It must run over a transport protocol that provides ordered, lossless, bi-directional connections—typically, TCP/IP.
-
-An MQTT client establishes a connection with the MQTT broker. Once connected, the client can either publish messages, subscribe to specific messages, or do both. When the MQTT broker receives a message, it forwards it to subscribers who are interested.
-"""
+# An abstract type representing a MQTT Client and the connection to an MQTT broker.
 abstract type AbstractConnection end
+
+# A type alias
+const OnMessage = Function
 
 ## -- Enums --
 
@@ -41,41 +36,128 @@ An enum representing the different Quality of Service (QoS) levels in MQTT.
 ## -- Interfaces --
 
 """
-    on_message(topic::String, payload::String)
+    connect_async!(c::AbstractConnection)
 
-A callback invoked when a message is received.
-
-Arguments:
-
-  - `topic (String)`: The topic receiving the message.
-  - `payload (String)`: The payload of the message.
-
-Returns `nothing`.
+make a connection to a broker.
 """
-const OnMessage = Function
+connect_async!(c::AbstractConnection) = _connect(c)
 
-connect(c::AbstractConnection) = _connect(c)
+"""
+    connect!(c::AbstractConnection)
 
+make a connection to a broker, and wait for the connection to be acknowleged.
+
+## Example
+
+```julia
+mqttconnection = ...
+connect!(mqttconnection)
+```
+"""
 connect!(c::AbstractConnection) = _resolve(_connect(c))
 
-subscribe(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
+"""
+    subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
+
+subscribe to a topic.
+"""
+subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
     _subscribe(callback, connection, topic, qos)
 
+"""
+    subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
+
+subscribe to a topic, and wait for subscription to be acknowleged.
+
+## Example
+
+use a previously defined callback function.
+
+```julia
+cb(topic, payload) = do_a_thing_for_device_one(payload)
+subscribe!(cb, mqttconnection, "group1/device1", QOS.EXACTLY_ONCE)
+```
+
+define the callback in a `do` block
+
+```julia
+subscribe!(mqttconnection, "group1/device2", QOS.EXACTLY_ONCE) do (topic, payload)
+    do_a_thing_for_device_two(payload)
+end
+```
+"""
 subscribe!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
     _resolve(_subscribe(callback, connection, topic, qos))
 
-publish(connection::AbstractConnection, topic, payload, qos::QOS; retain = false) =
+"""
+    publish_async!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false)
+
+publish to a topic.
+"""
+publish_async!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) =
     _publish(connection, topic, payload, qos, retain)
 
-publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false) =
+"""
+    publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false)
+
+publish to a topic, and wait for message to be acknowleged.
+
+## Example
+
+```julia
+publish!(mqttconnection, "group1/device1", "hello world", QOS.EXACTLY_ONCE)
+```
+"""
+publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) =
     _resolve(_publish(connection, topic, payload, qos, retain))
 
-unsubscribe(connection::AbstractConnection, topic) = _unsubscribe(connection, topic)
+"""
+    unsubscribe_async!(connection::AbstractConnection, topic)
 
+unsubscribe from a topic.
+"""
+unsubscribe_async!(connection::AbstractConnection, topic) = _unsubscribe(connection, topic)
+
+"""
+    unsubscribe!(connection::AbstractConnection, topic)
+
+unsubscribe from a topic, and wait for unsubscription to be acknowleged.
+
+## Example
+
+```julia
+unsubscribe!(mqttconnection, "group1/device1")
+```
+"""
 unsubscribe!(connection::AbstractConnection, topic) = _resolve(_unsubscribe(connection, topic))
 
-disconnect(connection::AbstractConnection) = _disconnect(connection)
+"""
+    disconnect_async!(connection::AbstractConnection)
 
+disconnect from a broker.
+"""
+disconnect_async!(connection::AbstractConnection) = _disconnect(connection)
+
+"""
+    disconnect!(connection::AbstractConnection)
+
+disconnect from a broker, and wait for disconnect to be acknowleged.
+
+## Example
+
+```julia
+disconnect!(mqttconnection)
+```
+"""
 disconnect!(connection::AbstractConnection) = _resolve(_disconnect(connection))
+
+## -- Internals --
+MQTTConnection() = nothing
+_resolve() = nothing
+_connect() = nothing
+_subscribe() = nothing
+_unsubscribe() = nothing
+_publish() = nothing
+_disconnect() = nothing
 
 end
