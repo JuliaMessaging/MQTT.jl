@@ -3,7 +3,7 @@ module AWSCRTExt
 using AWSCRT: AWSCRT
 using MQTT: MQTT
 
-struct MQTT.MQTTConnection <: MQTT.AbstractConnection
+struct AWSCRTConfig <: MQTT.AbstractConnection
     connection::AWSCRT.MQTTConnection
     endpoint::String
     port::Int
@@ -12,33 +12,33 @@ struct MQTT.MQTTConnection <: MQTT.AbstractConnection
 end
 
 function MQTT.MQTTConnection(connection, endpoint, port, id; connect_kwargs=Dict())
-    return MQTT.MQTTConnection(connection, endpoint, port, id, connect_kwargs)
+    return AWSCRTConfig(connection, endpoint, port, id, connect_kwargs)
 end
 
 function MQTT._resolve(async_object)
     return fetch(async_object)
 end
 
-function MQTT._connect(c::MQTT.MQTTConnection)
+function MQTT._connect(c::AWSCRTConfig)
     return AWSCRT.connect(c.connection, c.endpoint, c.port, c.id; c.connect_kwargs...)
 end
 
-function MQTT._subscribe(callback, c::MQTT.MQTTConnection, topic, qos)
+function MQTT._subscribe(callback, c::AWSCRTConfig, topic, qos)
     task, id = AWSCRT.subscribe(c.connection, topic; qos=AWSCRT.aws_mqtt_qos(Int(qos)), _adapt_on_message(callback))
     return task
 end
 
-function MQTT._publish(c::MQTT.MQTTConnection, topic, payload, qos, retain)
+function MQTT._publish(c::AWSCRTConfig, topic, payload, qos, retain)
     task, id = AWSCRT.publish(c.connection, topic, payload; qos=AWSCRT.aws_mqtt_qos(Int(qos)), retain=retain)
     return task
 end
 
-function MQTT._unsubscribe(c::MQTT.MQTTConnection, topic)
+function MQTT._unsubscribe(c::AWSCRTConfig, topic)
     task, id = AWSCRT.unsubscribe(c.connection, topic)
     return task
 end
 
-function MQTT._disconnect(c::MQTT.MQTTConnection)
+function MQTT._disconnect(c::AWSCRTConfig)
     return AWSCRT.disconnect(c.connection)
 end
 

@@ -22,6 +22,6 @@ Aditionally the following utility function(s) need to be implemented:
 
 * `_resolve(f)`: wrapper function for fetching a async result.
 
-Most importantly the connection struct needs to be created.
+Most importantly the connection struct needs to be created with the standard constructor function.
 
-* `MQTTConnection` this needs to be a subtype of `AbstractConnection` and contain all information specific to the MQTT Client that is being used.
+* `MQTTConnection` needs to to construct your struct, that is a subtype of `AbstractConnection`. The struct must contain all information specific to the MQTT Client that is being used.

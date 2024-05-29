@@ -152,6 +152,11 @@ disconnect!(mqttconnection)
 disconnect!(connection::AbstractConnection) = _resolve(_disconnect(connection))
 
 ## -- Internals --
+"""
+    MQTTConnection()
+
+This function constructs the connection struct that a given backend needs for interfacing with the MQTT Broker.
+"""
 MQTTConnection() = nothing
 _resolve() = nothing
 _connect() = nothing
