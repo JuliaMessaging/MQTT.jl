@@ -21,25 +21,19 @@ using MQTT, MQTTClient
 MQTT provides a `MQTTConnection` object for each backend, this struct is passed to the other included functions.
 
 ```julia
-client = MQTTClient.Client()
-connection = MQTTClient.Connection()
+client, connection = MQTTClient.MakeConnection(...)
 
 mqtt_connection = MQTTConnection(client, connection)
 ```
 
-Advanced Usage
---------------
-
-## Getting started
-To use this library you need to follow at least these steps:
-1. Define any client data structures needed for a given backend.
-2. Create an instance of the `MQTTConnection` struct passing the backend specific information.
-3. Call the connect method with your `Client` instance.
-4. Exchange data with the broker through publish, subscribe and unsubscribe. When subscribing, pass your callback function for that topic.
-5. Disconnect from the broker. (Not strictly necessary, if you don't want to resume the session but considered good form and less likely to crash).
-
-#### Basic example
+### Basic example
 Refer to the corresponding method documentation to find more options. Refer to the MQTT Client documentation for specifics about the client.
+
+#### AWSCRT.jl Example
+
+TODO
+
+#### MQTTClient.jl Example
 
 ```julia
 using MQTT, MQTTClient
@@ -51,22 +45,40 @@ function on_msg(topic, payload)
 end
 
 # Instantiate a client.
-client = MQTTClient.Client()
-connection = MQTTClient.Connection()
-mqtt_connection = MQTTConnection(client, connection)
+mqttconnection = MQTTConnection(MQTTClient.MakeConnection(broker, 1883))
 
-connect!(mqtt_connection)
+# connect to the broker
+connect!(mqttconnection)
 
 # Subscribe to the topic we will publish to.
-subscribe!(mqtt_connection, "jlExample", on_msg, qos=AT_LEAST_ONCE))
+subscribe!(on_msg, mqttconnection, "foo/test", EXACTLY_ONCE)
 
-publish!(mqtt_connection, "jlExample", "Hello World!")
+# Publish some data to the topic, you should see this prionted by the on_msg function
+publish!(mqttconnection, "foo/test", "bar", EXACTLY_ONCE)
 
 # Unsubscribe from the topic
-unsubscribe!(mqtt_connection, "jlExample")
+unsubscribe!(mqttconnection, "foo/test")
 
 # Disconnect from the broker. Not strictly needed as the broker will also
 #   disconnect us if the socket is closed. But this is considered good form
 #   and needed if you want to resume this session later.
+disconnect!(mqttconnection)
+
+# Unsubscribe from the topic
+unsubscribe!(mqtt_connection, "jlExample")
+
+
 disconnect!(mqtt_connection)
 ```
+
+Developer Usage
+--------------
+
+## Adding a new backend
+To use a new MQTT backend with MQTT.jl you need to follow at least these steps:
+1. Create a `MyMQTTClientExt.jl` in `ext/` 
+2. Define the 6 internal functions `_resolve`, `_connect`, `_subscribe`, `_unsubscribe`, `_publish`, `_disconnect` for your package.
+3. Define a struct that is a subtype of `AbstractConnection` and extend the `MQTTConnection` to construct your struct. This struct should contain all the information for making connections, publishing etc.
+4. Add some documentation for how to use your package.
+5. Add some tests (optional).
+ 

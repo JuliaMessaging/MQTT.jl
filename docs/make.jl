@@ -22,6 +22,4 @@ makedocs(;
     ],
 )
 
-deploydocs(;
-    repo="github.com/JuliaMessaging/MQTT.jl",
-)
+deploydocs(; repo="github.com/JuliaMessaging/MQTT.jl")

@@ -2,16 +2,16 @@
 ```
 
 ```@docs
-AbstractConnection
 QOS
-connect
+MQTTConnection
+connect_async!
 connect!
-subscribe
+subscribe_async!
 subscribe!
-publish
+publish_async!
 publish!
-unsubscribe
+unsubscribe_async!
 unsubscribe!
-disconnect
+disconnect_async!
 disconnect!
 ```
