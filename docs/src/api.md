@@ -2,7 +2,6 @@
 ```
 
 ```@docs
-AbstractConnection
 QOS
 MQTTConnection
 connect_async!
