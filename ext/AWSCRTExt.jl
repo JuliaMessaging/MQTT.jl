@@ -23,8 +23,8 @@ function MQTT._connect(c::AWSCRTConfig)
     return AWSCRT.connect(c.connection, c.endpoint, c.port, c.id; c.connect_kwargs...)
 end
 
-function MQTT._subscribe(callback, c::AWSCRTConfig, topic, qos)
-    task, id = AWSCRT.subscribe(c.connection, topic; qos=AWSCRT.aws_mqtt_qos(Int(qos)), _adapt_on_message(callback))
+function MQTT._subscribe(callback::AWSCRT.OnMessage, c::AWSCRTConfig, topic, qos)
+    task, id = AWSCRT.subscribe(c.connection, topic; qos=AWSCRT.aws_mqtt_qos(Int(qos)), callback)
     return task
 end
 
@@ -42,10 +42,12 @@ function MQTT._disconnect(c::AWSCRTConfig)
     return AWSCRT.disconnect(c.connection)
 end
 
-function _adapt_on_message(cb::MQTT.OnMessage)
-    return function _awscrt_on_message(topic, payload, dup, qos, retain)
-        return cb(topic, payload)
-    end
-end
+# function _adapt_on_message(cb::MQTT.OnMessage)
+#     return function essage(topic, payload, dup, qos, retain)
+#         return cb(topic, payload)
+#     end
+# end
+
+MQTT.OnMessage = AWSCRT.OnMessage
 
 end # module

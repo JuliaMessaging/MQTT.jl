@@ -15,7 +15,7 @@ MQTTClientExt = "MQTTClient"
 
 [compat]
 julia = "1.9"
-MQTTClient = "^0.3.2"
+MQTTClient = "^0.3.1"
 AWSCRT = "^0.3"
 Aqua = "^0.8"
 Test = "^0"

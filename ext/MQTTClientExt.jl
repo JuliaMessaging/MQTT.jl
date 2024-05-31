@@ -7,7 +7,9 @@ struct MQTTClientConfig <: MQTT.AbstractConnection
     client::MQTTClient.Client
     connection::MQTTClient.Connection
 end
-MQTT.MQTTConnection(configuration::MQTTClient.Configuration) = MQTTClientConfig(configuration.client, configuration.connection)
+function MQTT.MQTTConnection(configuration::MQTTClient.Configuration)
+    return MQTTClientConfig(configuration.client, configuration.connection)
+end
 MQTT.MQTTConnection(client::MQTTClient.Client, connection::MQTTClient.Connection) = MQTTClientConfig(client, connection)
 
 function MQTT._resolve(async_object)
