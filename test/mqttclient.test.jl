@@ -28,9 +28,17 @@ end
 @testset verbose = true "Extension  Functions for MQTTClient.jl" begin
     cb(args...) = nothing
 
-    server = Sys.iswindows() ? MQTTClient.MockMQTTBroker(ip"127.0.0.1", 1881) : MQTTClient.MockMQTTBroker("/tmp/testmqtt.sock")
+    server = if Sys.iswindows()
+        MQTTClient.MockMQTTBroker(ip"127.0.0.1", 1881)
+    else
+        MQTTClient.MockMQTTBroker("/tmp/testmqtt.sock")
+    end
 
-    conf = Sys.iswindows() ? MQTTConnection(MQTTClient.MakeConnection(ip"127.0.0.1", 1881)) : MQTTConnection(MQTTClient.MakeConnection("/tmp/testmqtt.sock"))
+    conf = if Sys.iswindows()
+        MQTTConnection(MQTTClient.MakeConnection(ip"127.0.0.1", 1881))
+    else
+        MQTTConnection(MQTTClient.MakeConnection("/tmp/testmqtt.sock"))
+    end
 
     @testset "connect!" begin
         connect!(conf)
