@@ -1,5 +1,6 @@
 using MQTTClient: MQTTClient
 using MQTT
+using Sockets
 
 using Aqua
 
@@ -27,9 +28,9 @@ end
 @testset verbose = true "Extension  Functions for MQTTClient.jl" begin
     cb(args...) = nothing
 
-    server = MQTTClient.MockMQTTBroker("/tmp/testmqtt.sock")
+    server = Sys.iswindows() ? MQTTClient.MockMQTTBroker(ip"127.0.0.1", 1881) : MQTTClient.MockMQTTBroker("/tmp/testmqtt.sock")
 
-    conf = MQTTConnection(MQTTClient.MakeConnection("/tmp/testmqtt.sock"))
+    conf = Sys.iswindows() ? MQTTConnection(MQTTClient.MakeConnection(ip"127.0.0.1", 1881)) : MQTTConnection(MQTTClient.MakeConnection("/tmp/testmqtt.sock"))
 
     @testset "connect!" begin
         connect!(conf)

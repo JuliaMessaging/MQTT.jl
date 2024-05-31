@@ -14,17 +14,19 @@ AWSCRTExt = "AWSCRT"
 MQTTClientExt = "MQTTClient"
 
 [compat]
-julia = "1.9"
-MQTTClient = "^0.3.1"
 AWSCRT = "^0.3"
 Aqua = "^0.8"
+MQTTClient = "^0.3.1"
 Test = "^0"
+Sockets = "^0"
+julia = "1.9"
 
 [extras]
 AWSCRT = "df31ea59-17a4-4ebd-9d69-4f45266dc2c7"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 MQTTClient = "985f35cc-2c3d-4943-b8c1-f0931d5f0959"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [targets]
-test = ["Aqua", "AWSCRT", "MQTTClient", "Test"]
+test = ["Aqua", "AWSCRT", "MQTTClient", "Test", "Sockets"]
