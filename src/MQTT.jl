@@ -69,7 +69,7 @@ subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos
     _subscribe(callback, connection, topic, qos)
 
 """
-    subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
+    subscribe!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
 
 Subscribe to a topic and wait for subscription to be acknowledged.
 
