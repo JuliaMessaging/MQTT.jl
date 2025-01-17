@@ -81,7 +81,7 @@ subscribe!(cb, mqttconnection, "group1/device1", QOS.EXACTLY_ONCE)
 define the callback in a `do` block
 
 ```julia
-subscribe!(mqttconnection, "group1/device2", QOS.EXACTLY_ONCE) do (topic, payload)
+subscribe!(mqttconnection, "group1/device2", QOS.EXACTLY_ONCE) do topic, payload
     do_a_thing_for_device_two(payload)
 end
 ```

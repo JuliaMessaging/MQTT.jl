@@ -36,7 +36,7 @@ port = 1883
 mqttconnection = MQTT.MQTTConnection(MQTTClient.MakeConnection(broker, port))
 connect!(mqttconnection)
 
-subscribe!(mqttconnection, "foo/test", EXACTLY_ONCE) do (topic, payload)
+subscribe!(mqttconnection, "foo/test", EXACTLY_ONCE) do topic, payload
 	println("MQTT[$topic]: $payload")
 end
 
