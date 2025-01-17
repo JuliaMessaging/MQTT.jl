@@ -89,6 +89,10 @@ subscribe!(mqttconnection, "group1/device2", QOS.EXACTLY_ONCE) do topic, payload
     do_a_thing_for_device_two(payload)
 end
 ```
+
+The code in your function may be executed in a different thread than the main application!
+It is recommended to use asynchronous function calls inside of the callback.
+For example, use `subscribe_async!` inside of callbacks instead of the blocking `subscribe!` version.
 """
 subscribe!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
     _resolve(_subscribe(callback, connection, topic, qos))
