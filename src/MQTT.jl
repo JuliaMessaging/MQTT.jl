@@ -38,14 +38,16 @@ An enum representing the different Quality of Service (QoS) levels in MQTT.
 """
     connect_async!(c::AbstractConnection)
 
-make a connection to a broker.
+Make a connection to a broker.
+
+Returns immediately, does not wait for an acknowledgement.
 """
 connect_async!(c::AbstractConnection) = _connect(c)
 
 """
     connect!(c::AbstractConnection)
 
-make a connection to a broker, and wait for the connection to be acknowleged.
+Connect to a broker and wait for the connection to be acknowledged.
 
 ## Example
 
@@ -59,7 +61,9 @@ connect!(c::AbstractConnection) = _resolve(_connect(c))
 """
     subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
 
-subscribe to a topic.
+Subscribe to a topic.
+
+Returns immediately, does not wait for acknowledgement.
 """
 subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS) =
     _subscribe(callback, connection, topic, qos)
@@ -67,18 +71,18 @@ subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos
 """
     subscribe_async!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
 
-subscribe to a topic, and wait for subscription to be acknowleged.
+Subscribe to a topic and wait for subscription to be acknowledged.
 
 ## Example
 
-use a previously defined callback function.
+Either use a previously defined callback function `cb`:
 
 ```julia
 cb(topic, payload) = do_a_thing_for_device_one(payload)
 subscribe!(cb, mqttconnection, "group1/device1", QOS.EXACTLY_ONCE)
 ```
 
-define the callback in a `do` block
+Or define the callback in a `do` block:
 
 ```julia
 subscribe!(mqttconnection, "group1/device2", QOS.EXACTLY_ONCE) do topic, payload
@@ -92,7 +96,9 @@ subscribe!(callback::OnMessage, connection::AbstractConnection, topic, qos::QOS)
 """
     publish_async!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false)
 
-publish to a topic.
+Publish to a topic.
+
+Returns immediately, does not wait for acknowledgment.
 """
 publish_async!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false) =
     _publish(connection, topic, payload, qos, retain)
@@ -100,7 +106,7 @@ publish_async!(connection::AbstractConnection, topic, payload, qos::QOS; retain=
 """
     publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain = false)
 
-publish to a topic, and wait for message to be acknowleged.
+Publish to a topic and wait for message to be acknowledged.
 
 ## Example
 
@@ -114,14 +120,16 @@ publish!(connection::AbstractConnection, topic, payload, qos::QOS; retain=false)
 """
     unsubscribe_async!(connection::AbstractConnection, topic)
 
-unsubscribe from a topic.
+Unsubscribe from a topic. 
+
+Returns immediately, does not wait for acknowledgement.
 """
 unsubscribe_async!(connection::AbstractConnection, topic) = _unsubscribe(connection, topic)
 
 """
     unsubscribe!(connection::AbstractConnection, topic)
 
-unsubscribe from a topic, and wait for unsubscription to be acknowleged.
+Unsubscribe from a topic and wait for unsubscription to be acknowledged.
 
 ## Example
 
@@ -134,14 +142,14 @@ unsubscribe!(connection::AbstractConnection, topic) = _resolve(_unsubscribe(conn
 """
     disconnect_async!(connection::AbstractConnection)
 
-disconnect from a broker.
+Disconnect from a broker.
 """
 disconnect_async!(connection::AbstractConnection) = _disconnect(connection)
 
 """
     disconnect!(connection::AbstractConnection)
 
-disconnect from a broker, and wait for disconnect to be acknowleged.
+Disconnect from a broker, and wait for disconnect to be acknowledged.
 
 ## Example
 
