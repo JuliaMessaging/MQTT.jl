@@ -36,7 +36,7 @@ port = 1883
 mqttconnection = MQTT.MQTTConnection(MQTTClient.MakeConnection(broker, port))
 connect!(mqttconnection)
 
-subscribe!(mqttconnection, "foo/test", EXACTLY_ONCE) do (topic, payload)
+subscribe!(mqttconnection, "foo/test", EXACTLY_ONCE) do topic, payload
 	println("MQTT[$topic]: $payload")
 end
 
@@ -58,4 +58,4 @@ If there is an MQTT package that you would like to see included please submit an
 - [x] add tests
 - [ ] check if other clients can integrate
 - [ ] register in Julia General
-- [x] general doctrings for interface functions
+- [x] general docstrings for interface functions
